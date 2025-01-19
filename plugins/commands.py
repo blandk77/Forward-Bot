@@ -58,6 +58,46 @@ async def start(client, message):
             ],[
                 InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
             ]]
+            await message.reply_text(
+            text="You are not verified !\nKindly verify to continue !",
+            protect_content=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
+
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, message.from_user.mention)
+        await client.send_message(
+            chat_id=Config.LOG_CHANNEL,
+            text=f"#NewUser\n\nIᴅ - {user.id}\nNᴀᴍᴇ - {message.from_user.mention}"
+        )
+    reply_markup = InlineKeyboardMarkup(main_buttons)
+    await client.send_message(
+        chat_id=message.chat.id,
+        reply_markup=InlineKeyboardMarkup(main_buttons),
+        text=Translation.START_TXT.format(message.from_user.first_name))
+    
+    if len(message.command) > 1 and message.command [1] :
+        if message.command[1].split("-", 1)[0] == "verify":
+            userid = message.command[1].split("-", 2)[1]
+            token = message.command[1].split("-", 3)[2]
+            if str(message.from_user.id) != str(userid):
+                return await message.reply_text(
+                    text="Invalid link or Expired link !",
+                    protect_content=True
+                )
+            is_valid = await check_token(client, userid, token)
+            if is_valid == True:
+                await message.reply_text(
+                    text=f"Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all files till today midnight.",
+                    protect_content=True
+                )
+                await verify_user(client, userid, token)
+            else:
+                return await message.reply_text(
+                    text="Invalid link or Expired link !",
+                    protect_content=True
+               )
   
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
