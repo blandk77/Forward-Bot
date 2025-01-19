@@ -3,6 +3,7 @@ import sys
 import asyncio 
 import datetime
 import psutil
+import logging 
 from pyrogram.types import Message
 from database import db, mongodb_version
 from config import Config, temp, VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
@@ -29,6 +30,7 @@ main_buttons = [[
 
 @Client.on_message(filters.private & filters.command(['start']))
 async def start(client, message):
+    logging.debug(f"Start command received from: {message.from_user.id}")
     user = message.from_user
     if Config.FORCE_SUB_ON:
         try:
@@ -39,8 +41,8 @@ async def start(client, message):
                     text="You are banned from using this bot.",
                 )
                 return
-        except:
-            # Send a message asking the user to join the channel
+        except Exception as e:
+            logging.error(f"Error force sub: {e}")
             join_button = [
                 [InlineKeyboardButton("ᴊᴏɪɴ ᴄʜᴀɴɴᴇʟ", url=f"{Config.FORCE_SUB_CHANNEL}")],
                 [InlineKeyboardButton("↻ ᴛʀʏ ᴀɢᴀɪɴ", url=f"https://telegram.me/{client.username}?start=start")]
@@ -53,24 +55,36 @@ async def start(client, message):
             return
 
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
-        btn = [[
-                InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{BOT_USERNAME}?start="))
-            ],[
-                InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
-            ]]
+        try:
+            btn = [[
+                    InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{BOT_USERNAME}?start="))
+                ],[
+                    InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+                ]]
             await message.reply_text(
-            text="You are not verified !\nKindly verify to continue !",
-            protect_content=True,
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
-        return
+                text="You are not verified !\nKindly verify to continue !",
+                protect_content=True,
+                reply_markup=InlineKeyboardMarkup(btn)
+            )
+            return
+        except Exception as e:
+            logging.error(f"Error getting verification token: {e}")
+            return
 
+    logging.debug(f"Checking user {user.id} exists")
     if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, message.from_user.mention)
-        await client.send_message(
-            chat_id=Config.LOG_CHANNEL,
-            text=f"#NewUser\n\nIᴅ - {user.id}\nNᴀᴍᴇ - {message.from_user.mention}"
-        )
+        try:
+            logging.debug(f"User {user.id} does not exist, adding to database.")
+            await db.add_user(user.id, message.from_user.mention)
+            logging.debug(f"User {user.id} added, sending message to log channel.")
+            await client.send_message(
+                chat_id=Config.LOG_CHANNEL,
+                text=f"#NewUser\n\nIᴅ - {user.id}\nNᴀᴍᴇ - {message.from_user.mention}"
+            )
+            logging.debug(f"Message sent to log channel")
+        except Exception as e:
+             logging.error(f"Error adding user to database: {e}")
+
     reply_markup = InlineKeyboardMarkup(main_buttons)
     await client.send_message(
         chat_id=message.chat.id,
@@ -97,8 +111,7 @@ async def start(client, message):
                 return await message.reply_text(
                     text="Invalid link or Expired link !",
                     protect_content=True
-               )
-  
+                    )
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
 # For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
