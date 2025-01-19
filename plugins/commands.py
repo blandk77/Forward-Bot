@@ -7,7 +7,7 @@ import logging
 from pyrogram.types import Message
 from database import db, mongodb_version
 from config import Config, temp, VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
-from TS import check_verification, get_token 
+from TS import verify_user, check_token  
 from platform import python_version
 from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
