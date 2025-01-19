@@ -22,12 +22,24 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 
 @Client.on_message(filters.private & filters.command(["fwd", "forward"]))
 async def run(bot, message):
+    user_id = message.from_user.id
+    if not await check_verification(bot, message.from_user.id) and VERIFY == True:
+        btn = [[
+            InlineKeyboardButton("Verify", url=await get_token(bot, message.from_user.id, f"https://telegram.me/{BOT_USERNAME}?start="))
+        ],[
+            InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+        ]]
+        await message.reply_text(
+            text="You are not verified !\nKindly verify to continue !",
+            protect_content=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
     buttons = []
     btn_data = {}
-    user_id = message.from_user.id
     _bot = await db.get_bot(user_id)
     if not _bot:
-      return await message.reply("<code>__**You didn't added any bot. Please add a bot using /settings !**__</code>")
+      return await message.reply("You didn't added any bot. Please add a bot using /settings !")
     channels = await db.get_user_channels(user_id)
     if not channels:
        return await message.reply_text("Please set a to channel in /settings before forwarding")
@@ -46,7 +58,7 @@ async def run(bot, message):
     else:
        toid = channels[0]['chat_id']
        to_title = channels[0]['title']
-    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
+         fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
     if fromid.text and fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return 
@@ -63,14 +75,14 @@ async def run(bot, message):
         last_msg_id = fromid.forward_from_message_id
         chat_id = fromid.forward_from_chat.username or fromid.forward_from_chat.id
         if last_msg_id == None:
-           return await message.reply_text("**This may be a forwarded message from a group and sended by anonymous admin. instead of this please send last message link from group**")
+           return await message.reply_text("This may be a forwarded message from a group and sended by anonymous admin. instead of this please send last message link from group")
     else:
-        await message.reply_text("**invalid !**")
+        await message.reply_text("invalid !")
         return 
     try:
         title = (await bot.get_chat(chat_id)).title
   #  except ChannelInvalid:
-        #return await fromid.reply("**Given source chat is copyrighted channel/group. you can't forward messages from there**")
+        #return await fromid.reply("Given source chat is copyrighted channel/group. you can't forward messages from there")
     except (PrivateChat, ChannelPrivate, ChannelInvalid):
         title = "private" if fromid.text else fromid.forward_from_chat.title
     except (UsernameInvalid, UsernameNotModified):
@@ -93,7 +105,6 @@ async def run(bot, message):
         reply_markup=reply_markup
     )
     STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
-    
-#Dont Remove My Credit @Silicon_Bot_Update 
+ 
 #This Repo Is By @Silicon_Official 
 # For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
