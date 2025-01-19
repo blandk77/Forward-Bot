@@ -9,6 +9,12 @@ def is_enabled(value, default):
     else:
         return default
 
+API = environ.get("API", "") # shortlink api
+URL = environ.get("URL", "") # shortlink domain without https://
+VERIFY_TUTORIAL = environ.get("VERIFY_TUTORIAL", "") # how to open link 
+BOT_USERNAME = environ.get("BOT_USERNAME", "") # bot username without @
+VERIFY = environ.get("VERIFY", "True")
+
 class Config:
     API_ID = environ.get("API_ID", "26728872")
     API_HASH = environ.get("API_HASH", "96985c2aaea6c75408528909b7e18879")
