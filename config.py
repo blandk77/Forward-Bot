@@ -13,7 +13,7 @@ API = environ.get("API", "") # shortlink api
 URL = environ.get("URL", "") # shortlink domain without https://
 VERIFY_TUTORIAL = environ.get("VERIFY_TUTORIAL", "") # how to open link 
 BOT_USERNAME = environ.get("BOT_USERNAME", "") # bot username without @
-VERIFY = environ.get("VERIFY", "True")
+VERIFY = environ.get("VERIFY", "False")
 
 class Config:
     API_ID = environ.get("API_ID", "26728872")
