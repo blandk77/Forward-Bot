@@ -59,7 +59,7 @@ async def run(bot, message):
     else:
        toid = channels[0]['chat_id']
        to_title = channels[0]['title']
-         fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
+       fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
     if fromid.text and fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return 
