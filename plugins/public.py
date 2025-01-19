@@ -6,7 +6,8 @@ import re
 import asyncio 
 from .utils import STS
 from database import db
-from config import temp 
+from config import temp, VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
+from TS import check_verification, get_token 
 from translation import Translation
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait 
