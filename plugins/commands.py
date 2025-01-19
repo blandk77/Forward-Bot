@@ -5,7 +5,8 @@ import datetime
 import psutil
 from pyrogram.types import Message
 from database import db, mongodb_version
-from config import Config, temp
+from config import Config, temp, VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
+from TS import check_verification, get_token 
 from platform import python_version
 from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
@@ -49,6 +50,19 @@ async def start(client, message):
                 reply_markup=InlineKeyboardMarkup(join_button)
             )
             return
+
+                if not await check_verification(client, message.from_user.id) and VERIFY == True:
+        btn = [[
+            InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{BOT_USERNAME}?start="))
+        ],[
+            InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+        ]]
+        await message.reply_text(
+            text="<b>You are not verified !\nKindly verify to continue !</b>",
+            protect_content=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
 
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, message.from_user.mention)
