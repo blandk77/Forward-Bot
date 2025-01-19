@@ -14,7 +14,7 @@ API = environ.get("API", "bfabf898bffa9192f184455d7d82954a26bf87eb") # shortlink
 URL = environ.get("URL", "gplinks.com") # shortlink domain without https://
 VERIFY_TUTORIAL = environ.get("VERIFY_TUTORIAL", "https://t.me/the_tgguy") # how to open link 
 BOT_USERNAME = environ.get("BOT_USERNAME", "not_ur_robot") # bot username without @
-VERIFY = environ.get("VERIFY", "False")
+VERIFY = environ.get("VERIFY", "True")
 
 class Config:
     API_ID = environ.get("API_ID", "26728872")
