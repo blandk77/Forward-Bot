@@ -9,13 +9,10 @@ from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait 
 from aiohttp import web
 from plugins import web_server 
-
-#Dont Remove My Credit @Silicon_Bot_Update 
-#This Repo Is By @Silicon_Official 
-# For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
+ 
 
 logging.config.fileConfig('logging.conf')
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG)  # Changed to DEBUG
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
 class Bot(Client): 
@@ -43,12 +40,10 @@ class Bot(Client):
         self.username = me.username
         self.first_name = me.first_name
         self.set_parse_mode(ParseMode.DEFAULT)
-        text = "<b>๏[-ิ_•ิ]๏ ʙᴏᴛ ʀᴇsᴛᴀʀᴛᴇᴅ !</b>"
+        text = "๏[-ิ_•ิ]๏ ʙᴏᴛ ʀᴇsᴛᴀʀᴛᴇᴅ !"
         logging.info(text)
         success = failed = 0
-#Dont Remove My Credit @Silicon_Bot_Update 
-#This Repo Is By @Silicon_Official 
-# For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
+ 
         users = await db.get_all_frwd()
         async for user in users:
            chat_id = user['user_id']
@@ -66,9 +61,7 @@ class Bot(Client):
            logging.info(f"Restart message status"
                  f"success: {success}"
                  f"failed: {failed}")
-#Dont Remove My Credit @Silicon_Bot_Update 
-#This Repo Is By @Silicon_Official 
-# For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
+ 
     async def stop(self, *args):
         msg = f"@{self.username} stopped. Bye."
         await super().stop()
