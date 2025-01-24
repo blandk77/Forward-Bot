@@ -112,7 +112,12 @@ async def start(client, message):
                     text="Invalid link or Expired link !",
                     protect_content=True
             )
-        
+
+
+
+@client.on_message(filters.command("hello"))
+       async def hello(client, message):
+           await message.reply_text("Hello there!")
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
 # For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
